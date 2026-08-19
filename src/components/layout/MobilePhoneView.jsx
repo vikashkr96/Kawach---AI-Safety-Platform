@@ -19,27 +19,15 @@ export default function MobilePhoneView({ activeTab, setActiveTab }) {
   const [showReportForm, setShowReportForm] = useState(false);
 
   return (
-    <div className="w-full max-w-[390px] mx-auto min-h-[780px] bg-slate-50 text-slate-900 rounded-[44px] shadow-2xl border-[10px] border-slate-900 overflow-hidden flex flex-col relative font-['Plus_Jakarta_Sans',sans-serif]">
+    <div className="w-full max-w-[390px] mx-auto min-h-[720px] bg-slate-50 text-slate-900 rounded-[36px] shadow-2xl border-4 border-slate-800 overflow-hidden flex flex-col relative font-['Plus_Jakarta_Sans',sans-serif]">
       
-      {/* Phone Notch Header */}
-      <div className="w-full bg-slate-900 pt-3 pb-2 px-6 flex items-center justify-between text-white text-[11px] font-bold">
-        <span>9:41</span>
-        <div className="w-24 h-4 bg-black rounded-full flex items-center justify-center">
-          <div className="w-2.5 h-2.5 rounded-full bg-teal-400 animate-pulse"></div>
-        </div>
-        <div className="flex items-center space-x-1.5 text-[10px]">
-          <span>5G</span>
-          <span>100%</span>
-        </div>
-      </div>
+      {/* 1. Main Scrollable Mobile Body (Extra bottom padding pb-28 ensures ZERO overlap with bottom nav) */}
+      <div className="flex-1 overflow-y-auto px-4 pt-4 pb-28 space-y-4 bg-gradient-to-b from-slate-50 via-teal-50/20 to-slate-50">
 
-      {/* Main App Body */}
-      <div className="flex-1 overflow-y-auto px-4 pt-3 pb-24 space-y-4 bg-gradient-to-b from-slate-50 via-teal-50/20 to-slate-50">
-
-        {/* 1. User Profile Greeting */}
-        <div className="flex items-center justify-between">
+        {/* User Profile Greeting Header */}
+        <div className="flex items-center justify-between pt-1">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-teal-500 to-cyan-500 text-white flex items-center justify-center font-extrabold shadow-lg shadow-teal-500/25">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-teal-500 to-cyan-500 text-white flex items-center justify-center font-extrabold shadow-md shadow-teal-500/20">
               AS
             </div>
             <div>
@@ -48,27 +36,27 @@ export default function MobilePhoneView({ activeTab, setActiveTab }) {
             </div>
           </div>
 
-          <button className="p-2.5 rounded-2xl bg-white text-slate-700 shadow-md shadow-slate-200/50 border border-slate-100 relative">
+          <button className="p-2.5 rounded-2xl bg-white text-slate-700 shadow-md shadow-slate-200/60 border border-slate-100 relative">
             <Bell className="w-4 h-4 text-slate-600" />
             <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500"></span>
           </button>
         </div>
 
-        {/* 2. Today's Safety Score Gauge Card */}
-        <div className="bg-white rounded-[28px] p-4 border border-slate-100 shadow-xl shadow-slate-200/50 flex items-center justify-between">
+        {/* Today's Safety Score Gauge Card */}
+        <div className="bg-white rounded-[26px] p-4 border border-slate-100 shadow-xl shadow-slate-200/50 flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <div className="relative w-16 h-16 flex items-center justify-center">
-              <svg className="w-16 h-16 transform -rotate-90">
-                <circle cx="32" cy="32" r="26" stroke="#f1f5f9" strokeWidth="6" fill="transparent" />
+            <div className="relative w-14 h-14 flex items-center justify-center">
+              <svg className="w-14 h-14 transform -rotate-90">
+                <circle cx="28" cy="28" r="22" stroke="#f1f5f9" strokeWidth="5" fill="transparent" />
                 <circle
-                  cx="32"
-                  cy="32"
-                  r="26"
+                  cx="28"
+                  cy="28"
+                  r="22"
                   stroke="#10b981"
-                  strokeWidth="6"
+                  strokeWidth="5"
                   fill="transparent"
-                  strokeDasharray="163"
-                  strokeDashoffset="35"
+                  strokeDasharray="138"
+                  strokeDashoffset="28"
                   strokeLinecap="round"
                 />
               </svg>
@@ -79,13 +67,13 @@ export default function MobilePhoneView({ activeTab, setActiveTab }) {
               <span className="text-[10px] font-bold uppercase tracking-wider text-teal-600 bg-teal-50 px-2 py-0.5 rounded-md">
                 Safety Rating
               </span>
-              <h3 className="text-xs font-extrabold text-slate-900 mt-1">High Safe Zone Coverage</h3>
+              <h3 className="text-xs font-extrabold text-slate-900 mt-0.5">High Safe Zone Coverage</h3>
               <p className="text-[10px] font-medium text-slate-500">3 Trusted Contacts Active</p>
             </div>
           </div>
         </div>
 
-        {/* 3. Quick Actions 2x2 Grid Pills */}
+        {/* Quick Actions 2x2 Grid Pills */}
         <div>
           <span className="text-xs font-extrabold text-slate-900 block mb-2">Quick Actions</span>
           <div className="grid grid-cols-2 gap-2.5">
@@ -93,7 +81,7 @@ export default function MobilePhoneView({ activeTab, setActiveTab }) {
             {/* Action 1: Start Walk */}
             <button
               onClick={() => setShowStartModal(true)}
-              className="bg-emerald-500 text-white p-3.5 rounded-[24px] shadow-lg shadow-emerald-500/25 flex items-center justify-between font-bold text-xs hover:brightness-105 transition-all text-left"
+              className="bg-emerald-500 text-white p-3.5 rounded-[22px] shadow-lg shadow-emerald-500/25 flex items-center justify-between font-bold text-xs hover:brightness-105 transition-all text-left"
             >
               <div>
                 <Navigation className="w-5 h-5 mb-1 text-white" />
@@ -105,7 +93,7 @@ export default function MobilePhoneView({ activeTab, setActiveTab }) {
             {/* Action 2: Voice Check-In */}
             <button
               onClick={() => setShowVoiceModal(true)}
-              className="bg-amber-500 text-white p-3.5 rounded-[24px] shadow-lg shadow-amber-500/25 flex items-center justify-between font-bold text-xs hover:brightness-105 transition-all text-left"
+              className="bg-amber-500 text-white p-3.5 rounded-[22px] shadow-lg shadow-amber-500/25 flex items-center justify-between font-bold text-xs hover:brightness-105 transition-all text-left"
             >
               <div>
                 <Mic className="w-5 h-5 mb-1 text-white" />
@@ -117,7 +105,7 @@ export default function MobilePhoneView({ activeTab, setActiveTab }) {
             {/* Action 3: Report Hazard */}
             <button
               onClick={() => setShowReportForm(!showReportForm)}
-              className="bg-cyan-500 text-white p-3.5 rounded-[24px] shadow-lg shadow-cyan-500/25 flex items-center justify-between font-bold text-xs hover:brightness-105 transition-all text-left"
+              className="bg-cyan-500 text-white p-3.5 rounded-[22px] shadow-lg shadow-cyan-500/25 flex items-center justify-between font-bold text-xs hover:brightness-105 transition-all text-left"
             >
               <div>
                 <PlusCircle className="w-5 h-5 mb-1 text-white" />
@@ -132,7 +120,7 @@ export default function MobilePhoneView({ activeTab, setActiveTab }) {
                 const sosBtn = document.getElementById('mobile-sos-trigger');
                 if (sosBtn) sosBtn.click();
               }}
-              className="bg-rose-500 text-white p-3.5 rounded-[24px] shadow-lg shadow-rose-500/25 flex items-center justify-between font-bold text-xs hover:brightness-105 transition-all text-left"
+              className="bg-rose-500 text-white p-3.5 rounded-[22px] shadow-lg shadow-rose-500/25 flex items-center justify-between font-bold text-xs hover:brightness-105 transition-all text-left"
             >
               <div>
                 <AlertTriangle className="w-5 h-5 mb-1 text-white animate-bounce" />
@@ -144,23 +132,23 @@ export default function MobilePhoneView({ activeTab, setActiveTab }) {
           </div>
         </div>
 
-        {/* 4. Active Walk Panel (if active) */}
+        {/* Active Walk Panel (if active) */}
         {activeWalk?.status === 'active' && (
           <ActiveWalkCard />
         )}
 
-        {/* 5. Report Hazard Form Drawer */}
+        {/* Report Hazard Form Drawer */}
         {showReportForm && (
           <IncidentReportForm onCancel={() => setShowReportForm(false)} />
         )}
 
-        {/* 6. Emergency SOS Trigger Card */}
+        {/* Emergency SOS Button */}
         <div id="mobile-sos-trigger">
           <InstantSOSButton />
         </div>
 
-        {/* 7. Live Safety Map */}
-        <div className="bg-white rounded-[28px] p-2 border border-slate-100 shadow-xl shadow-slate-200/50 space-y-2">
+        {/* Live Safety Map */}
+        <div className="bg-white rounded-[26px] p-2 border border-slate-100 shadow-xl shadow-slate-200/50 space-y-2">
           <div className="flex items-center justify-between px-2 pt-1">
             <span className="text-xs font-black text-slate-900 flex items-center gap-1.5">
               <Shield className="w-4 h-4 text-teal-600" />
@@ -170,49 +158,43 @@ export default function MobilePhoneView({ activeTab, setActiveTab }) {
               GPS Active
             </span>
           </div>
-          <div className="h-52 rounded-[22px] overflow-hidden border border-slate-100">
+          <div className="h-48 rounded-[20px] overflow-hidden border border-slate-100">
             <MapView />
           </div>
         </div>
 
       </div>
 
-      {/* 8. Floating Bottom Navigation Bar */}
-      <div className="absolute bottom-3 left-4 right-4 bg-slate-900 text-white rounded-full p-2 flex items-center justify-around shadow-2xl border border-slate-800 z-30">
+      {/* 2. Fixed Bottom Navigation Bar (Non-overlapping with proper z-index) */}
+      <div className="absolute bottom-2 left-3 right-3 bg-slate-900 text-white rounded-full p-2 flex items-center justify-around shadow-2xl border border-slate-800 z-30">
         <button
           onClick={() => setActiveTab('walk')}
-          className={`flex flex-col items-center p-2 rounded-full transition-all ${
-            activeTab === 'walk' ? 'bg-teal-500 text-white px-4' : 'text-slate-400 hover:text-white'
+          className={`flex items-center space-x-1.5 px-4 py-2 rounded-full transition-all ${
+            activeTab === 'walk' ? 'bg-teal-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-white'
           }`}
         >
-          <Home className="w-5 h-5" />
-        </button>
-
-        <button
-          onClick={() => setActiveTab('walk')}
-          className={`flex flex-col items-center p-2 rounded-full transition-all ${
-            activeTab === 'walk' ? 'text-teal-400 font-bold' : 'text-slate-400 hover:text-white'
-          }`}
-        >
-          <Navigation className="w-5 h-5" />
+          <Home className="w-4 h-4" />
+          {activeTab === 'walk' && <span className="text-xs">Home</span>}
         </button>
 
         <button
           onClick={() => setActiveTab('contacts')}
-          className={`flex flex-col items-center p-2 rounded-full transition-all ${
-            activeTab === 'contacts' ? 'bg-teal-500 text-white px-4' : 'text-slate-400 hover:text-white'
+          className={`flex items-center space-x-1.5 px-4 py-2 rounded-full transition-all ${
+            activeTab === 'contacts' ? 'bg-teal-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-white'
           }`}
         >
-          <Users className="w-5 h-5" />
+          <Users className="w-4 h-4" />
+          {activeTab === 'contacts' && <span className="text-xs">Feed</span>}
         </button>
 
         <button
           onClick={() => setActiveTab('warden')}
-          className={`flex flex-col items-center p-2 rounded-full transition-all ${
-            activeTab === 'warden' ? 'bg-teal-500 text-white px-4' : 'text-slate-400 hover:text-white'
+          className={`flex items-center space-x-1.5 px-4 py-2 rounded-full transition-all ${
+            activeTab === 'warden' ? 'bg-teal-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-white'
           }`}
         >
-          <Building2 className="w-5 h-5" />
+          <Building2 className="w-4 h-4" />
+          {activeTab === 'warden' && <span className="text-xs">Security</span>}
         </button>
       </div>
 
