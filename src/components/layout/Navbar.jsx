@@ -1,9 +1,9 @@
 import React from 'react';
-import { Shield, Users, Building2, MapPin, Smartphone, Monitor } from 'lucide-react';
+import { Shield, Users, Building2, MapPin } from 'lucide-react';
 import { useSafety } from '../../context/SafetyContext';
 import { CITY_PRESETS } from '../../data/seedIncidents';
 
-export default function Navbar({ activeTab, setActiveTab, isMobileFrame, setIsMobileFrame }) {
+export default function Navbar({ activeTab, setActiveTab }) {
   const { currentCity, changeCity } = useSafety();
 
   const navItems = [
@@ -62,7 +62,7 @@ export default function Navbar({ activeTab, setActiveTab, isMobileFrame, setIsMo
         {/* Right Action Utilities */}
         <div className="flex items-center space-x-2.5">
           {/* City Preset Selector */}
-          <div className="hidden lg:flex items-center space-x-2 bg-slate-900/90 border border-slate-800 rounded-xl px-3 py-1.5 text-xs">
+          <div className="flex items-center space-x-2 bg-slate-900/90 border border-slate-800 rounded-xl px-3 py-1.5 text-xs">
             <MapPin className="w-3.5 h-3.5 text-teal-400" />
             <select
               value={currentCity.name}
@@ -79,19 +79,6 @@ export default function Navbar({ activeTab, setActiveTab, isMobileFrame, setIsMo
               ))}
             </select>
           </div>
-
-          {/* Mobile Preview Switcher Toggle */}
-          <button
-            onClick={() => setIsMobileFrame(!isMobileFrame)}
-            title={isMobileFrame ? 'Switch to Fullscreen View' : 'Switch to Mobile Phone View'}
-            className={`p-2.5 rounded-xl text-xs font-bold border transition-all ${
-              isMobileFrame
-                ? 'bg-teal-950 text-teal-300 border-teal-700/60'
-                : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
-            }`}
-          >
-            {isMobileFrame ? <Smartphone className="w-4 h-4 text-teal-400" /> : <Monitor className="w-4 h-4" />}
-          </button>
         </div>
       </div>
 
