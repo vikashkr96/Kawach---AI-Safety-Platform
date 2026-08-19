@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { AlertOctagon, PhoneCall, ShieldAlert, Check, Radio, Bot, Clock, Mail } from 'lucide-react';
+import { AlertOctagon, PhoneCall, ShieldAlert, Check, Radio, Clock } from 'lucide-react';
 import { useSafety } from '../../context/SafetyContext';
 import { dispatchEmergencyAlert } from '../../services/alertDispatch';
 
@@ -7,7 +7,6 @@ export default function InstantSOSButton() {
   const { triggerSOS, currentLocation, contacts } = useSafety();
   const [triggered, setTriggered] = useState(false);
   const [cooldownSeconds, setCooldownSeconds] = useState(0);
-  const [dispatchInfo, setDispatchInfo] = useState(null);
   const timerRef = useRef(null);
 
   // 30-second cooldown timer countdown
@@ -34,8 +33,8 @@ export default function InstantSOSButton() {
     setTriggered(true);
     setCooldownSeconds(30);
 
-    // Trigger automated Email & AI Call Dispatch
-    const result = await dispatchEmergencyAlert({
+    // Trigger automated Email & AI Call Dispatch in background
+    await dispatchEmergencyAlert({
       userName: 'Ananya Sharma',
       userPhone: '+919631412596',
       userEmail: 'vk4845646@gmail.com',
@@ -43,8 +42,6 @@ export default function InstantSOSButton() {
       reason: 'Instant SOS Button Pressed by User',
       contacts
     });
-
-    setDispatchInfo(result);
   };
 
   const cooldownPercent = Math.max(0, ((30 - cooldownSeconds) / 30) * 100);
@@ -73,7 +70,7 @@ export default function InstantSOSButton() {
                 SOS DISPATCHED — COOLDOWN ({cooldownSeconds}s)
               </span>
               <span className="text-[10px] font-bold text-cyan-300 uppercase block opacity-90">
-                DISPATCH CASCADE IN PROGRESS
+                EMERGENCY CONTACT CASCADE IN PROGRESS
               </span>
             </div>
           </>
@@ -85,7 +82,7 @@ export default function InstantSOSButton() {
             <div className="text-left">
               <span className="text-base font-extrabold block leading-tight">EMERGENCY SOS</span>
               <span className="text-[10px] font-bold text-red-200 tracking-normal block opacity-90">
-                DISPATCHES LIVE CALL & EMAIL TO +91 9631412596
+                ONE-TAP DISPATCH TO ALL 3 TRUSTED CONTACTS
               </span>
             </div>
           </>
@@ -99,32 +96,6 @@ export default function InstantSOSButton() {
             className="bg-gradient-to-r from-cyan-500 to-emerald-400 h-full rounded-full transition-all duration-1000"
             style={{ width: `${cooldownPercent}%` }}
           />
-        </div>
-      )}
-
-      {/* Live Dispatch Server Diagnostics Toast */}
-      {dispatchInfo && (
-        <div className="mt-3 p-4 rounded-2xl bg-slate-950 border border-cyan-500/60 shadow-2xl space-y-2 text-xs">
-          <div className="flex items-center justify-between font-extrabold text-cyan-300 border-b border-slate-800 pb-1.5">
-            <span className="flex items-center gap-1.5">
-              <Bot className="w-4 h-4 text-cyan-400" />
-              Live Server Dispatch Status
-            </span>
-            <span className="text-[10px] bg-cyan-950 text-cyan-400 px-2 py-0.5 rounded-full border border-cyan-800">
-              Port 3001
-            </span>
-          </div>
-
-          <div className="space-y-1 font-mono text-[11px]">
-            <div className="flex items-center justify-between text-slate-300">
-              <span>📞 Twilio Call:</span>
-              <span className="text-emerald-400 font-bold">{dispatchInfo.callStatus || 'Executing'}</span>
-            </div>
-            <div className="flex items-center justify-between text-slate-300">
-              <span>✉️ Email Status:</span>
-              <span className="text-cyan-400 font-bold">{dispatchInfo.emailStatus || 'Sent to vk4845646@gmail.com'}</span>
-            </div>
-          </div>
         </div>
       )}
 

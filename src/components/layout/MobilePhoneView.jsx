@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   Shield, Navigation, Mic, PlusCircle, AlertTriangle, Home, Users, Building2, 
-  Clock, MapPin, Bell, ChevronRight, CheckCircle2, Radio, Sparkles, Activity
+  Clock, MapPin, Bell, ChevronRight, CheckCircle2, Radio, Activity
 } from 'lucide-react';
 import { useSafety } from '../../context/SafetyContext';
 import MapView from '../map/MapView';
@@ -12,7 +12,7 @@ import VoiceCheckInModal from '../safewalk/VoiceCheckInModal';
 import IncidentReportForm from '../community/IncidentReportForm';
 
 export default function MobilePhoneView({ activeTab, setActiveTab }) {
-  const { activeWalk, currentLocation, incidents, riskZones } = useSafety();
+  const { activeWalk } = useSafety();
 
   const [showStartModal, setShowStartModal] = useState(false);
   const [showVoiceModal, setShowVoiceModal] = useState(false);
@@ -21,11 +21,11 @@ export default function MobilePhoneView({ activeTab, setActiveTab }) {
   return (
     <div className="w-full max-w-[390px] mx-auto min-h-[780px] bg-slate-50 text-slate-900 rounded-[44px] shadow-2xl border-[10px] border-slate-900 overflow-hidden flex flex-col relative font-['Plus_Jakarta_Sans',sans-serif]">
       
-      {/* Top Phone Notch / Dynamic Island */}
+      {/* Phone Notch Header */}
       <div className="w-full bg-slate-900 pt-3 pb-2 px-6 flex items-center justify-between text-white text-[11px] font-bold">
         <span>9:41</span>
         <div className="w-24 h-4 bg-black rounded-full flex items-center justify-center">
-          <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse"></div>
+          <div className="w-2.5 h-2.5 rounded-full bg-teal-400 animate-pulse"></div>
         </div>
         <div className="flex items-center space-x-1.5 text-[10px]">
           <span>5G</span>
@@ -33,35 +33,30 @@ export default function MobilePhoneView({ activeTab, setActiveTab }) {
         </div>
       </div>
 
-      {/* Main Scrollable Mobile App Body */}
+      {/* Main App Body */}
       <div className="flex-1 overflow-y-auto px-4 pt-3 pb-24 space-y-4 bg-gradient-to-b from-slate-50 via-teal-50/20 to-slate-50">
 
-        {/* 1. Header & Greeting Bar */}
+        {/* 1. User Profile Greeting */}
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-2xl bg-teal-500 text-white flex items-center justify-center font-extrabold shadow-lg shadow-teal-500/30">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-teal-500 to-cyan-500 text-white flex items-center justify-center font-extrabold shadow-lg shadow-teal-500/25">
               AS
             </div>
             <div>
-              <div className="flex items-center space-x-1.5">
-                <h2 className="text-sm font-extrabold text-slate-900">Hi, Ananya 👋</h2>
-              </div>
+              <h2 className="text-sm font-extrabold text-slate-900">Hi, Ananya 👋</h2>
               <p className="text-[11px] font-medium text-slate-500">Ready for a safe walk?</p>
             </div>
           </div>
 
-          <div className="flex items-center space-x-2">
-            <button className="p-2.5 rounded-2xl bg-white text-slate-700 shadow-md shadow-slate-200/50 border border-slate-100 relative">
-              <Bell className="w-4 h-4 text-slate-600" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500"></span>
-            </button>
-          </div>
+          <button className="p-2.5 rounded-2xl bg-white text-slate-700 shadow-md shadow-slate-200/50 border border-slate-100 relative">
+            <Bell className="w-4 h-4 text-slate-600" />
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500"></span>
+          </button>
         </div>
 
-        {/* 2. Today's Progress / Safety Score Card (Soft Neumorphic Style from Reference Image) */}
+        {/* 2. Today's Safety Score Gauge Card */}
         <div className="bg-white rounded-[28px] p-4 border border-slate-100 shadow-xl shadow-slate-200/50 flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            {/* Circular Gauge Ring */}
             <div className="relative w-16 h-16 flex items-center justify-center">
               <svg className="w-16 h-16 transform -rotate-90">
                 <circle cx="32" cy="32" r="26" stroke="#f1f5f9" strokeWidth="6" fill="transparent" />
@@ -77,7 +72,7 @@ export default function MobilePhoneView({ activeTab, setActiveTab }) {
                   strokeLinecap="round"
                 />
               </svg>
-              <span className="absolute text-xs font-black text-slate-900">82%</span>
+              <span className="absolute text-xs font-black text-slate-900">85%</span>
             </div>
 
             <div>
@@ -85,12 +80,12 @@ export default function MobilePhoneView({ activeTab, setActiveTab }) {
                 Safety Rating
               </span>
               <h3 className="text-xs font-extrabold text-slate-900 mt-1">High Safe Zone Coverage</h3>
-              <p className="text-[10px] font-medium text-slate-500">3 Verified Contacts Active</p>
+              <p className="text-[10px] font-medium text-slate-500">3 Trusted Contacts Active</p>
             </div>
           </div>
         </div>
 
-        {/* 3. Quick Actions 2x2 Grid Pills (Matching Reference UI Layout) */}
+        {/* 3. Quick Actions 2x2 Grid Pills */}
         <div>
           <span className="text-xs font-extrabold text-slate-900 block mb-2">Quick Actions</span>
           <div className="grid grid-cols-2 gap-2.5">
@@ -131,7 +126,7 @@ export default function MobilePhoneView({ activeTab, setActiveTab }) {
               <ChevronRight className="w-4 h-4 opacity-80" />
             </button>
 
-            {/* Action 4: Emergency SOS */}
+            {/* Action 4: Instant SOS */}
             <button
               onClick={() => {
                 const sosBtn = document.getElementById('mobile-sos-trigger');
@@ -159,12 +154,12 @@ export default function MobilePhoneView({ activeTab, setActiveTab }) {
           <IncidentReportForm onCancel={() => setShowReportForm(false)} />
         )}
 
-        {/* 6. Emergency SOS Card */}
+        {/* 6. Emergency SOS Trigger Card */}
         <div id="mobile-sos-trigger">
           <InstantSOSButton />
         </div>
 
-        {/* 7. Interactive Live Map (Clean Soft Border) */}
+        {/* 7. Live Safety Map */}
         <div className="bg-white rounded-[28px] p-2 border border-slate-100 shadow-xl shadow-slate-200/50 space-y-2">
           <div className="flex items-center justify-between px-2 pt-1">
             <span className="text-xs font-black text-slate-900 flex items-center gap-1.5">
@@ -182,7 +177,7 @@ export default function MobilePhoneView({ activeTab, setActiveTab }) {
 
       </div>
 
-      {/* 8. Floating Bottom Navigation Bar (Matches Reference Image UI) */}
+      {/* 8. Floating Bottom Navigation Bar */}
       <div className="absolute bottom-3 left-4 right-4 bg-slate-900 text-white rounded-full p-2 flex items-center justify-around shadow-2xl border border-slate-800 z-30">
         <button
           onClick={() => setActiveTab('walk')}
