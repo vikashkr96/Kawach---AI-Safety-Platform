@@ -1,15 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AlertOctagon, PhoneCall, ShieldAlert, Check, Radio, Clock } from 'lucide-react';
 import { useSafety } from '../../context/SafetyContext';
+import { useAuth } from '../../context/AuthContext';
 import { dispatchEmergencyAlert } from '../../services/alertDispatch';
 
 export default function InstantSOSButton() {
   const { triggerSOS, currentLocation, contacts } = useSafety();
+  const { user } = useAuth();
+
   const [triggered, setTriggered] = useState(false);
   const [cooldownSeconds, setCooldownSeconds] = useState(0);
   const timerRef = useRef(null);
 
-  // 30-second cooldown timer countdown
+  // 30-second cooldown timer
   useEffect(() => {
     if (cooldownSeconds > 0) {
       timerRef.current = setInterval(() => {
@@ -29,15 +32,15 @@ export default function InstantSOSButton() {
   const handleSOS = async () => {
     if (cooldownSeconds > 0) return;
 
-    triggerSOS('Instant Emergency SOS Triggered');
+    triggerSOS(`Instant SOS Triggered by ${user?.name || 'User'}`);
     setTriggered(true);
     setCooldownSeconds(30);
 
-    // Trigger automated Email & AI Call Dispatch in background
+    // Dispatch alert with logged in user profile
     await dispatchEmergencyAlert({
-      userName: 'Ananya Sharma',
-      userPhone: '+919631412596',
-      userEmail: 'vk4845646@gmail.com',
+      userName: user?.name || 'Vikash Kumar',
+      userPhone: user?.phone || '+91 9631412596',
+      userEmail: user?.email || 'vk4845646@gmail.com',
       location: currentLocation,
       reason: 'Instant SOS Button Pressed by User',
       contacts

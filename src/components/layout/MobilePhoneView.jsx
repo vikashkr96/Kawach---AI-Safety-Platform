@@ -4,6 +4,7 @@ import {
   Clock, MapPin, Bell, ChevronRight, CheckCircle2, Radio, Activity
 } from 'lucide-react';
 import { useSafety } from '../../context/SafetyContext';
+import { useAuth } from '../../context/AuthContext';
 import MapView from '../map/MapView';
 import ActiveWalkCard from '../safewalk/ActiveWalkCard';
 import InstantSOSButton from '../alerts/InstantSOSButton';
@@ -13,25 +14,36 @@ import IncidentReportForm from '../community/IncidentReportForm';
 
 export default function MobilePhoneView({ activeTab, setActiveTab }) {
   const { activeWalk } = useSafety();
+  const { user } = useAuth();
 
   const [showStartModal, setShowStartModal] = useState(false);
   const [showVoiceModal, setShowVoiceModal] = useState(false);
   const [showReportForm, setShowReportForm] = useState(false);
 
+  // Avatar initials (e.g. Vikash Kumar -> VK)
+  const getInitials = (nameStr) => {
+    if (!nameStr) return 'VK';
+    const parts = nameStr.split(' ');
+    if (parts.length >= 2) return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
+    return nameStr.substring(0, 2).toUpperCase();
+  };
+
+  const firstName = user?.name ? user.name.split(' ')[0] : 'Vikash';
+
   return (
     <div className="w-full max-w-[390px] mx-auto min-h-[720px] bg-slate-50 text-slate-900 rounded-[36px] shadow-2xl border-4 border-slate-800 overflow-hidden flex flex-col relative font-['Plus_Jakarta_Sans',sans-serif]">
       
-      {/* 1. Main Scrollable Mobile Body (Extra bottom padding pb-28 ensures ZERO overlap with bottom nav) */}
+      {/* Main Scrollable Mobile Body */}
       <div className="flex-1 overflow-y-auto px-4 pt-4 pb-28 space-y-4 bg-gradient-to-b from-slate-50 via-teal-50/20 to-slate-50">
 
-        {/* User Profile Greeting Header */}
+        {/* Dynamic User Profile Greeting Header */}
         <div className="flex items-center justify-between pt-1">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-teal-500 to-cyan-500 text-white flex items-center justify-center font-extrabold shadow-md shadow-teal-500/20">
-              AS
+              {getInitials(user?.name)}
             </div>
             <div>
-              <h2 className="text-sm font-extrabold text-slate-900">Hi, Ananya 👋</h2>
+              <h2 className="text-sm font-extrabold text-slate-900">Hi, {firstName} 👋</h2>
               <p className="text-[11px] font-medium text-slate-500">Ready for a safe walk?</p>
             </div>
           </div>
@@ -42,7 +54,7 @@ export default function MobilePhoneView({ activeTab, setActiveTab }) {
           </button>
         </div>
 
-        {/* Today's Safety Score Gauge Card */}
+        {/* Safety Score Gauge Card */}
         <div className="bg-white rounded-[26px] p-4 border border-slate-100 shadow-xl shadow-slate-200/50 flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <div className="relative w-14 h-14 flex items-center justify-center">
@@ -132,12 +144,12 @@ export default function MobilePhoneView({ activeTab, setActiveTab }) {
           </div>
         </div>
 
-        {/* Active Walk Panel (if active) */}
+        {/* Active Walk Panel */}
         {activeWalk?.status === 'active' && (
           <ActiveWalkCard />
         )}
 
-        {/* Report Hazard Form Drawer */}
+        {/* Report Hazard Drawer */}
         {showReportForm && (
           <IncidentReportForm onCancel={() => setShowReportForm(false)} />
         )}
@@ -165,7 +177,7 @@ export default function MobilePhoneView({ activeTab, setActiveTab }) {
 
       </div>
 
-      {/* 2. Fixed Bottom Navigation Bar (Non-overlapping with proper z-index) */}
+      {/* Floating Bottom Navigation */}
       <div className="absolute bottom-2 left-3 right-3 bg-slate-900 text-white rounded-full p-2 flex items-center justify-around shadow-2xl border border-slate-800 z-30">
         <button
           onClick={() => setActiveTab('walk')}

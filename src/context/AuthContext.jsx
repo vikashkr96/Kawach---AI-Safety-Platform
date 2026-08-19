@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { localStore } from '../services/firebase';
 
 const AuthContext = createContext();
@@ -7,8 +7,8 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     return localStore.get('kavach_user', {
       uid: 'u-101',
-      name: 'Ananya Sharma',
-      email: 'ananya.s@example.com',
+      name: 'Vikash Kumar',
+      email: 'vk4845646@gmail.com',
       phone: '+91 9631412596',
       role: 'user' // 'user' | 'contact' | 'warden'
     });
@@ -22,12 +22,18 @@ export function AuthProvider({ children }) {
     localStore.emit('kavach_user', newUser);
   };
 
+  const updateProfile = (name, phone, email) => {
+    const updated = { ...user, name, phone, email };
+    setUser(updated);
+    localStore.emit('kavach_user', updated);
+  };
+
   const setRole = (role) => {
     setActiveRole(role);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, activeRole, setRole }}>
+    <AuthContext.Provider value={{ user, login, updateProfile, activeRole, setRole }}>
       {children}
     </AuthContext.Provider>
   );

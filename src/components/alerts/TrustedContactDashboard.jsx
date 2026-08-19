@@ -1,9 +1,11 @@
 import React from 'react';
 import { AlertTriangle, Phone, ExternalLink, ShieldCheck, Clock, MapPin, CheckCircle2, User, Radio } from 'lucide-react';
 import { useSafety } from '../../context/SafetyContext';
+import { useAuth } from '../../context/AuthContext';
 
 export default function TrustedContactDashboard() {
   const { alerts, contacts, offlineSmsQueue } = useSafety();
+  const { user } = useAuth();
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto p-2">
@@ -21,21 +23,21 @@ export default function TrustedContactDashboard() {
               </span>
             </h2>
             <p className="text-xs text-slate-400">
-              Real-time emergency monitoring feed for Ananya Sharma's safety circle
+              Real-time emergency monitoring feed for {user?.name || 'Vikash Kumar'}'s safety circle
             </p>
           </div>
         </div>
 
-        {/* User Badge */}
+        {/* User Profile Badge */}
         <div className="flex items-center space-x-2 bg-slate-950 px-4 py-2.5 rounded-2xl border border-slate-800 text-xs">
           <User className="w-4 h-4 text-cyan-400" />
-          <span className="text-slate-200 font-bold">User: Ananya Sharma</span>
+          <span className="text-slate-200 font-bold">User: {user?.name || 'Vikash Kumar'}</span>
           <span className="text-slate-500">•</span>
-          <span className="text-cyan-400 font-mono">+1 (555) 987-6543</span>
+          <span className="text-cyan-400 font-mono">{user?.phone || '+91 9631412596'}</span>
         </div>
       </div>
 
-      {/* Offline SMS Queue Alert (if active) */}
+      {/* Offline SMS Queue Alert */}
       {offlineSmsQueue.length > 0 && (
         <div className="p-5 rounded-3xl bg-purple-950/80 border border-purple-700 space-y-2 shadow-xl">
           <div className="flex items-center justify-between">
@@ -44,11 +46,11 @@ export default function TrustedContactDashboard() {
               Offline SMS Queue Active ({offlineSmsQueue.length} alert queued)
             </span>
             <span className="text-[11px] font-bold bg-purple-900 text-purple-200 px-3 py-1 rounded-full">
-              Simulated SMS Gateway
+              SMS Protocol
             </span>
           </div>
           <p className="text-xs text-purple-200/90 leading-relaxed">
-            Device went offline during emergency alert. Alerts are queued and transmitting via SMS protocol to primary contact (+1-555-234-5678).
+            Device went offline during emergency alert. Alerts are queued and transmitting via SMS protocol to primary contact.
           </p>
         </div>
       )}
@@ -57,7 +59,7 @@ export default function TrustedContactDashboard() {
       <div className="space-y-4">
         <h3 className="text-xs font-black text-slate-400 uppercase tracking-wider flex items-center justify-between">
           <span>Active Alert Feed ({alerts.length})</span>
-          <span className="text-slate-500 font-medium">Real-time Firestore stream</span>
+          <span className="text-slate-500 font-medium">Real-time stream</span>
         </h3>
 
         {alerts.length === 0 ? (
@@ -107,7 +109,7 @@ export default function TrustedContactDashboard() {
                       <h4 className="text-base font-black tracking-wide uppercase">
                         {alert.type.replace('_', ' ')} ALERT
                       </h4>
-                      <p className="text-xs opacity-80 font-medium">{alert.timestamp} • User: {alert.userName}</p>
+                      <p className="text-xs opacity-80 font-medium">{alert.timestamp} • User: {alert.userName || user?.name}</p>
                     </div>
                   </div>
 
@@ -122,7 +124,7 @@ export default function TrustedContactDashboard() {
                   </span>
                 </div>
 
-                {/* Content */}
+                {/* Details */}
                 <div className="bg-slate-950/90 p-4 rounded-2xl border border-slate-800 space-y-2.5">
                   <p className="text-xs font-bold leading-relaxed text-slate-100">
                     "{alert.reason || alert.message}"
@@ -169,22 +171,16 @@ export default function TrustedContactDashboard() {
                   </div>
                 )}
 
-                {/* Action Buttons */}
+                {/* Call Button */}
                 {isCritical && (
                   <div className="flex space-x-3 pt-2">
                     <a
-                      href={`tel:${alert.userPhone || '+15559876543'}`}
+                      href={`tel:${alert.userPhone || user?.phone || '+919631412596'}`}
                       className="flex-1 py-3 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-black transition-all text-center flex items-center justify-center space-x-2 shadow-lg shadow-rose-600/30"
                     >
                       <Phone className="w-4 h-4" />
                       <span>CALL USER NOW</span>
                     </a>
-                    <button
-                      onClick={() => alert('Emergency dispatch notification issued to local authorities.')}
-                      className="flex-1 py-3 rounded-2xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-bold transition-all text-center"
-                    >
-                      Dispatch Emergency Services
-                    </button>
                   </div>
                 )}
               </div>
