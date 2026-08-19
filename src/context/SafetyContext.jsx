@@ -15,10 +15,10 @@ export function SafetyProvider({ children }) {
     lat: CITY_PRESETS[0].lat,
     lng: CITY_PRESETS[0].lng,
     heading: 0,
-    speed: 1.2 // m/s walking
+    speed: 1.2
   });
 
-  // Contacts
+  // Contacts list (works for Guest or Logged-in Account)
   const [contacts, setContacts] = useState(() => {
     return localStore.get('kavach_contacts', INITIAL_CONTACTS);
   });
@@ -36,13 +36,14 @@ export function SafetyProvider({ children }) {
   const [plannedRoute, setPlannedRoute] = useState(null);
   const [routeRiskAnalysis, setRouteRiskAnalysis] = useState(null);
 
-  // Alerts & SMS Fallback Queue
+  // Real-time Alerts & Shareable Token Link
   const [alerts, setAlerts] = useState(() => {
     return localStore.get('kavach_alerts', []);
   });
+  const [shareableFeedToken] = useState('kavach_feed_token_' + Date.now());
   const [offlineSmsQueue, setOfflineSmsQueue] = useState([]);
 
-  // Hands-free & Offline settings
+  // Network & Voice settings
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
   const [handsFreeEnabled, setHandsFreeEnabled] = useState(false);
   const [voiceSentinelActive, setVoiceSentinelActive] = useState(false);
@@ -51,12 +52,11 @@ export function SafetyProvider({ children }) {
   const [isSimulatingMovement, setIsSimulatingMovement] = useState(false);
   const [simulatedDeviationMeters, setSimulatedDeviationMeters] = useState(0);
 
-  // References for timers & voice
   const timerRef = useRef(null);
   const movementRef = useRef(null);
   const voiceSentinelRef = useRef(null);
 
-  // Sync state to localStore
+  // Sync state
   useEffect(() => {
     localStore.emit('kavach_contacts', contacts);
   }, [contacts]);
@@ -76,14 +76,7 @@ export function SafetyProvider({ children }) {
 
   // Online / Offline monitor
   useEffect(() => {
-    const handleOnline = () => {
-      setIsOffline(false);
-      // Flush offline SMS queue if present
-      if (offlineSmsQueue.length > 0) {
-        console.log('📡 Back online! Dispatching queued SMS alerts:', offlineSmsQueue);
-        setOfflineSmsQueue([]);
-      }
-    };
+    const handleOnline = () => setIsOffline(false);
     const handleOffline = () => setIsOffline(true);
 
     window.addEventListener('online', handleOnline);
@@ -92,7 +85,7 @@ export function SafetyProvider({ children }) {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
     };
-  }, [offlineSmsQueue]);
+  }, []);
 
   // Shake detector setup
   useEffect(() => {
@@ -125,7 +118,7 @@ export function SafetyProvider({ children }) {
     }
   }, [isSimulatingMovement]);
 
-  // Active Safe Walk countdown timer logic (Auto-escalation check)
+  // Safe Walk countdown timer logic
   useEffect(() => {
     if (!activeWalk || activeWalk.status !== 'active') return;
 
@@ -135,7 +128,6 @@ export function SafetyProvider({ children }) {
         const now = Date.now();
         const secondsRemaining = Math.max(0, Math.ceil((prev.expectedArrivalTime - now) / 1000));
 
-        // Auto-escalation check: Timer reached 0 (Deadline + Grace expired)
         if (secondsRemaining <= 0 && prev.status === 'active') {
           triggerAutoEscalation(prev);
           return { ...prev, status: 'escalated' };
@@ -165,8 +157,6 @@ export function SafetyProvider({ children }) {
     movementRef.current = setInterval(() => {
       stepIndex = (stepIndex + 1) % plannedRoute.length;
       const targetPoint = plannedRoute[stepIndex];
-
-      // Add dev deviation offset if requested
       const latOffset = simulatedDeviationMeters > 0 ? (simulatedDeviationMeters / 111111) : 0;
       
       setCurrentLocation({
@@ -207,7 +197,6 @@ export function SafetyProvider({ children }) {
     const waypoints = generateRoutePoints(currentLocation, { lat: destLat, lng: destLng });
     setPlannedRoute(waypoints);
 
-    // Call Gemini for risk-aware routing
     const riskData = await assessRouteRisk(
       'Current Location',
       destinationName,
@@ -231,7 +220,7 @@ export function SafetyProvider({ children }) {
       durationMinutes,
       graceMinutes: 2,
       secondsRemaining: durationMinutes * 60,
-      status: 'active', // 'active' | 'arrived' | 'escalated'
+      status: 'active',
       riskScore: routeInfo?.riskScore || 8.0,
       riskLevel: routeInfo?.riskLevel || 'Low Risk',
       hasAlertedDeviation: false
@@ -246,11 +235,10 @@ export function SafetyProvider({ children }) {
       setActiveWalk(prev => ({ ...prev, status: 'arrived' }));
       setIsSimulatingMovement(false);
       
-      // Dispatch safe arrival alert to contacts
       const safeNotification = {
         id: 'alert-' + Date.now(),
         type: 'SAFE_ARRIVAL',
-        userName: 'Ananya Sharma',
+        userName: 'Vikash Kumar',
         timestamp: new Date().toLocaleTimeString(),
         message: 'Checked in safely at ' + (activeWalk.destinationName || 'destination'),
         location: { ...currentLocation }
@@ -275,17 +263,25 @@ export function SafetyProvider({ children }) {
       id: 'alert-' + Date.now(),
       type: 'SOS',
       severity: 'CRITICAL',
-      userName: 'Ananya Sharma',
-      userPhone: '+1 (555) 987-6543',
+      userName: 'Vikash Kumar',
+      userPhone: '+91 9631412596',
       timestamp: new Date().toLocaleTimeString(),
       fullDate: new Date().toISOString(),
       reason: customReason,
       location: { ...currentLocation },
       contactsNotified: contacts,
+      shareableToken: shareableFeedToken,
       status: 'ACTIVE'
     };
 
     setAlerts(prev => [newAlert, ...prev]);
+
+    // Log MOCK_SMS payload with complete parameters
+    console.log('📱 [MOCK_SMS_PROVIDER=true] Outgoing Emergency Alert Payload:', {
+      to: contacts.map(c => c.phone),
+      body: `🚨 EMERGENCY SOS from Vikash Kumar (+91 9631412596): ${customReason}. Live Location: https://maps.google.com/?q=${currentLocation.lat},${currentLocation.lng}`,
+      timestamp: new Date().toISOString()
+    });
 
     if (isOffline) {
       setOfflineSmsQueue(prev => [...prev, { alert: newAlert, queuedAt: new Date().toLocaleTimeString() }]);
@@ -297,8 +293,8 @@ export function SafetyProvider({ children }) {
       id: 'alert-' + Date.now(),
       type: 'MISSED_CHECKIN',
       severity: 'HIGH',
-      userName: 'Ananya Sharma',
-      userPhone: '+1 (555) 987-6543',
+      userName: 'Vikash Kumar',
+      userPhone: '+91 9631412596',
       timestamp: new Date().toLocaleTimeString(),
       fullDate: new Date().toISOString(),
       reason: `Missed arrival check-in deadline (+2m grace) for ${walk.destinationName}`,
@@ -317,7 +313,7 @@ export function SafetyProvider({ children }) {
         id: 'alert-' + Date.now(),
         type: 'DEVIATION',
         severity: 'MEDIUM',
-        userName: 'Ananya Sharma',
+        userName: 'Vikash Kumar',
         timestamp: new Date().toLocaleTimeString(),
         reason: `Route deviation detected: User is ${meters}m off planned safe path`,
         location: { ...currentLocation },
@@ -366,6 +362,7 @@ export function SafetyProvider({ children }) {
       plannedRoute,
       routeRiskAnalysis,
       alerts,
+      shareableFeedToken,
       offlineSmsQueue,
       isOffline,
       setIsOffline,
